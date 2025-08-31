@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Game</title>
+<style>
+body { 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  flex-direction:column; 
+  height:100vh; 
+  background:#d8b4fe; 
+  font-family:"Comic Sans MS", cursive, sans-serif; 
+  margin:0;
+}
+#game { 
+  display:grid; 
+  grid-template-columns: repeat(4,80px); 
+  grid-gap:10px; 
+  margin-top: 20px;
+}
+.card { 
+  width:80px; 
+  height:80px; 
+  background:white; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  font-size:32px; 
+  cursor:pointer; 
+  border-radius:6px; 
+}
+#message, #timer { 
+  color:white; 
+  margin-top:15px; 
+  font-size:18px; 
+}
+button { 
+  margin-top:10px; 
+  padding:8px 15px; 
+  font-weight:bold; 
+  border:none; 
+  border-radius:5px; 
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+<h2 style="color:white;">🍒 Memory Game 🍉</h2>
+<button id="startBtn">Start Game</button>
+<div id="timer"></div>
+<div id="game"></div>
+<div id="message"></div>
+<button onclick="goBack()">Back to Games</button>
+
+<script>
+const fruits = ['🍎','🍉','🍓','🍊','🍌','🍒','🍍','🥝'];
+let cards = [];
+let first=null, second=null, lock=false, matches=0;
+let timer, timeLeft=60;
+
+const gameDiv=document.getElementById('game');
+const messageDiv=document.getElementById('message');
+const timerDiv=document.getElementById('timer');
+const startBtn=document.getElementById('startBtn');
+
+function shuffle(array){
+  return array.sort(()=>0.5-Math.random());
+}
+
+function startGame(){
+  // Reset everything
+  gameDiv.innerHTML='';
+  messageDiv.innerText='';
+  matches=0; first=null; second=null; lock=false;
+  timeLeft=60;
+  clearInterval(timer);
+
+  // Duplicate fruits to make pairs
+  cards=[...fruits,...fruits];
+  cards=shuffle(cards);
+
+  // Create cards
+  cards.forEach(v=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.value=v;
+    card.innerText='';
+    card.addEventListener('click', ()=> flipCard(card));
+    gameDiv.appendChild(card);
+  });
+
+  // Start timer
+  timerDiv.innerText="Time Left: 60s";
+  timer=setInterval(()=>{
+    timeLeft--;
+    timerDiv.innerText="Time Left: "+timeLeft+"s";
+    if(timeLeft<=0){
+      clearInterval(timer);
+      endGame(false);
+    }
+  },1000);
+}
+
+function flipCard(card){
+  if(lock || card===first || card.innerText!=='') return;
+  card.innerText=card.dataset.value;
+
+  if(!first){
+    first=card;
+  } else {
+    second=card;
+    if(first.dataset.value===second.dataset.value){
+      matches+=2;
+      first=null; second=null;
+      if(matches===cards.length) {
+        endGame(true);
+      }
+    } else {
+      lock=true;
+      setTimeout(()=>{
+        first.innerText=''; 
+        second.innerText='';
+        first=null; 
+        second=null; 
+        lock=false;
+      },800);
+    }
+  }
+}
+
+function endGame(won){
+  clearInterval(timer);
+  if(won){
+    messageDiv.innerText="🎉 You Won!";
+  } else {
+    messageDiv.innerText="⏳ Time's Up! Try Again!";
+  }
+}
+
+function goBack(){ window.location.href="page3.html"; }
+
+startBtn.addEventListener('click', startGame);
+</script>
+</body>
+</html>

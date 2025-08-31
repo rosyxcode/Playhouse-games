@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to My Playhouse</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #ffcce6; /* light pink */
+      overflow: hidden;
+      position: relative;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+    }
+
+    /* Welcome text with black outline */
+    .welcome-text {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3em;
+      font-weight: bold;
+      color: lightblue;
+      text-align: center;
+      text-shadow: -1px -1px 0 #000,  
+                   1px -1px 0 #000,
+                  -1px  1px 0 #000,
+                   1px  1px 0 #000; /* thin black outline */
+    }
+
+    /* Made by text */
+    .made-by {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5em;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .made-by .bow {
+      font-size: 1.5em;
+    }
+
+    .enter-btn {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 12px 24px;
+      font-size: 1.5em;
+      background: white;
+      border: 2px solid lightblue;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .enter-btn:hover {
+      background: lightblue;
+      color: white;
+    }
+
+    .kitty {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      animation: jump 1.5s infinite ease-in-out;
+    }
+
+    .head {
+      width: 40px;
+      height: 30px;
+      background: white;
+      position: relative;
+      border-radius: 6px;
+    }
+
+    .ear {
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 15px solid white;
+      position: absolute;
+      top: -12px;
+    }
+    .ear.left { left: 2px; }
+    .ear.right { right: 2px; }
+
+    .eye {
+      width: 6px;
+      height: 6px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+    }
+    .eye.left { left: 8px; }
+    .eye.right { right: 8px; }
+
+    .nose {
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid pink;
+      position: absolute;
+      top: 15px;
+      left: 16px;
+    }
+
+    .whisker {
+      width: 12px;
+      height: 1px;
+      background: black;
+      position: absolute;
+      top: 16px;
+    }
+    .whisker.left1 { left: -12px; transform: rotate(-10deg); }
+    .whisker.left2 { left: -12px; top: 20px; transform: rotate(10deg); }
+    .whisker.right1 { right: -12px; transform: rotate(10deg); }
+    .whisker.right2 { right: -12px; top: 20px; transform: rotate(-10deg); }
+
+    .body {
+      width: 30px;
+      height: 25px;
+      background: white;
+      border-radius: 6px;
+      position: relative;
+      top: -5px;
+      left: 5px;
+    }
+
+    .paw {
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -5px;
+    }
+    .paw.left { left: -5px; }
+    .paw.right { right: -5px; }
+
+    .tail {
+      width: 10px;
+      height: 25px;
+      background: white;
+      border-radius: 5px;
+      position: absolute;
+      right: -10px;
+      top: -5px;
+    }
+
+    @keyframes jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Bows 🎀 */
+    .bow {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bow::before, .bow::after {
+      content: '';
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+    }
+    .bow::before { left: -10px; }
+    .bow::after { right: -10px; }
+    .bow span {
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Made By Rosy Line -->
+  <div class="made-by">🎀 Made By Rosy 🎀</div>
+  <div class="welcome-text">Welcome to my Playhouse</div>
+  <button class="enter-btn" onclick="window.location.href='page2.html'">Enter</button>"
+  <script>
+    const numKitties = 12;
+    const numBows = 30;
+
+    const safeZone = document.querySelector(".welcome-text").getBoundingClientRect();
+    const safeZoneBtn = document.querySelector(".enter-btn").getBoundingClientRect();
+
+    function isInSafeZone(x, y) {
+      return (
+        (x > safeZone.left - 100 && x < safeZone.right + 100 &&
+         y > safeZone.top - 100 && y < safeZone.bottom + 100) ||
+        (x > safeZoneBtn.left - 100 && x < safeZoneBtn.right + 100 &&
+         y > safeZoneBtn.top - 100 && y < safeZoneBtn.bottom + 100)
+      );
+    }
+
+    // Place kitties
+    for (let i = 0; i < numKitties; i++) {
+      let x, y;
+      do {
+        x = Math.random() * (window.innerWidth - 60);
+        y = Math.random() * (window.innerHeight - 60);
+      } while (isInSafeZone(x, y));
+
+      const kitty = document.createElement("div");
+      kitty.className = "kitty";
+      kitty.style.left = x + "px";
+      kitty.style.top = y + "px";
+      kitty.style.animationDelay = (Math.random() * 2) + "s";
+
+      const head = document.createElement("div");
+      head.className = "head";
+
+      const earLeft = document.createElement("div");
+      earLeft.className = "ear left";
+      const earRight = document.createElement("div");
+      earRight.className = "ear right";
+
+      const eyeLeft = document.createElement("div");
+      eyeLeft.className = "eye left";
+      const eyeRight = document.createElement("div");
+      eyeRight.className = "eye right";
+
+      const nose = document.createElement("div");
+      nose.className = "nose";
+
+      const whiskerL1 = document.createElement("div");
+      whiskerL1.className = "whisker left1";
+      const whiskerL2 = document.createElement("div");
+      whiskerL2.className = "whisker left2";
+      const whiskerR1 = document.createElement("div");
+      whiskerR1.className = "whisker right1";
+      const whiskerR2 = document.createElement("div");
+      whiskerR2.className = "whisker right2";
+
+      head.appendChild(earLeft);
+      head.appendChild(earRight);
+      head.appendChild(eyeLeft);
+      head.appendChild(eyeRight);
+      head.appendChild(nose);
+      head.appendChild(whiskerL1);
+      head.appendChild(whiskerL2);
+      head.appendChild(whiskerR1);
+      head.appendChild(whiskerR2);
+
+      const body = document.createElement("div");
+      body.className = "body";
+
+      const pawLeft = document.createElement("div");
+      pawLeft.className = "paw left";
+      const pawRight = document.createElement("div");
+      pawRight.className = "paw right";
+
+      const tail = document.createElement("div");
+      tail.className = "tail";
+
+      body.appendChild(pawLeft);
+      body.appendChild(pawRight);
+      body.appendChild(tail);
+
+      kitty.appendChild(head);
+      kitty.appendChild(body);
+
+      document.body.appendChild(kitty);
+    }
+
+    // Place bows
+    for (let i = 0; i < numBows; i++) {
+      let x, y;
+      do {
+        x = Math.random() * (window.innerWidth - 30);
+        y = Math.random() * (window.innerHeight - 30);
+      } while (isInSafeZone(x, y));
+
+      const bow = document.createElement("div");
+      bow.className = "bow";
+      bow.style.left = x + "px";
+      bow.style.top = y + "px";
+
+      const center = document.createElement("span");
+      bow.appendChild(center);
+
+      document.body.appendChild(bow);
+    }
+  </script>
+</body>
+</html>

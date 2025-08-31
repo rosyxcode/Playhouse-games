@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game</title>
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  background-color: #d4f8d4;
+  background-image: radial-gradient(#b6e3b6 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+canvas {
+  background: #f5fff5;
+  border: 2px solid #444;
+  touch-action: none; /* prevent default scroll on swipe */
+}
+#message {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<h2>🐍 Snake Game 🐍</h2>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div id="message"></div>
+<button id="startBtn">Start Game</button>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const box = 20;
+let snake, direction, fruit, poison, game, score;
+
+const fruits = ["🍎","🍌","🍒","🍉","🍇","🥝"];
+
+function startGame() {
+  snake = [{x: 9 * box, y: 10 * box}];
+  direction = null;
+  score = 0;
+  fruit = randomPosition();
+  poison = randomPosition();
+  document.getElementById("message").innerText = "";
+  
+  if (game) clearInterval(game);
+  game = setInterval(draw, 180); // slightly slower
+}
+
+function randomPosition() {
+  return {
+    x: Math.floor(Math.random() * (canvas.width / box)) * box,
+    y: Math.floor(Math.random() * (canvas.height / box)) * box
+  };
+}
+
+// ---- Keyboard Controls ----
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+  else if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+  else if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+  else if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+});
+
+// ---- Touch / Mouse Controls ----
+let startX, startY;
+
+function handleSwipe(endX, endY) {
+  let dx = endX - startX;
+  let dy = endY - startY;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 0 && direction !== "LEFT") direction = "RIGHT";
+    else if (dx < 0 && direction !== "RIGHT") direction = "LEFT";
+  } else {
+    if (dy > 0 && direction !== "UP") direction = "DOWN";
+    else if (dy < 0 && direction !== "DOWN") direction = "UP";
+  }
+}
+
+// Touch
+canvas.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+}, false);
+
+canvas.addEventListener("touchend", (e) => {
+  let endX = e.changedTouches[0].clientX;
+  let endY = e.changedTouches[0].clientY;
+  handleSwipe(endX, endY);
+}, false);
+
+// Mouse drag
+canvas.addEventListener("mousedown", (e) => {
+  startX = e.clientX;
+  startY = e.clientY;
+}, false);
+
+canvas.addEventListener("mouseup", (e) => {
+  let endX = e.clientX;
+  let endY = e.clientY;
+  handleSwipe(endX, endY);
+}, false);
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // draw snake
+  for (let i = 0; i < snake.length; i++) {
+    ctx.fillStyle = (i === 0) ? "green" : "lightgreen";
+    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+  }
+
+  // draw fruit
+  ctx.font = "20px Arial";
+  ctx.fillText(fruits[score % fruits.length], fruit.x + 2, fruit.y + 18);
+
+  // draw poison
+  ctx.fillText("💀", poison.x + 2, poison.y + 18);
+
+  // move snake
+  let snakeX = snake[0].x;
+  let snakeY = snake[0].y;
+
+  if (direction === "LEFT") snakeX -= box;
+  if (direction === "UP") snakeY -= box;
+  if (direction === "RIGHT") snakeX += box;
+  if (direction === "DOWN") snakeY += box;
+
+  // fruit collision
+  if (snakeX === fruit.x && snakeY === fruit.y) {
+    score++;
+    fruit = randomPosition();
+  } 
+  // poison collision
+  else if (snakeX === poison.x && snakeY === poison.y) {
+    if (snake.length === 1) {
+      // restart if snake is already tiny
+      clearInterval(game);
+      document.getElementById("message").innerText = "☠️ Poisoned at start! Restarting...";
+      setTimeout(startGame, 1500);
+      return;
+    } else {
+      snake = [snake[0]]; // shrink back to size 1
+      poison = randomPosition();
+    }
+  } 
+  else {
+    snake.pop(); // normal move
+  }
+
+  const newHead = {x: snakeX, y: snakeY};
+
+  // Game Over
+  if (
+    snakeX < 0 || snakeY < 0 || 
+    snakeX >= canvas.width || snakeY >= canvas.height ||
+    collision(newHead, snake)
+  ) {
+    clearInterval(game);
+    document.getElementById("message").innerText = "💀 Game Over!";
+    return;
+  }
+
+  snake.unshift(newHead);
+}
+
+function collision(head, array) {
+  for (let i = 0; i < array.length; i++) {
+    if (head.x === array[i].x && head.y === array[i].y) {
+      return true;
+    }
+  }
+  return false;
+}
+
+document.getElementById("startBtn").addEventListener("click", startGame);
+</script>
+</body>
+</html>

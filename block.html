@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Dodge Extreme</title>
+<style>
+body { 
+  display:flex; 
+  flex-direction:column; 
+  justify-content:center; 
+  align-items:center; 
+  height:100vh; 
+  background:#d8b4fe; 
+  font-family:"Comic Sans MS", cursive, sans-serif; 
+  margin:0;
+}
+canvas { 
+  background:url('background2.jpg'); /* pixel blue background */
+  background-size:cover; 
+  border-radius:10px; 
+  touch-action:none; 
+}
+button { 
+  margin-top:10px; 
+  padding:8px 15px; 
+  font-weight:bold; 
+  border:none; 
+  border-radius:5px; 
+  cursor:pointer;
+}
+#score { color:white; font-size:20px; margin-top:10px; }
+</style>
+</head>
+<body>
+<canvas id="game" width="400" height="400"></canvas>
+<div id="score">Score: 0</div>
+<button id="startBtn">Start Game</button>
+<button onclick="goBack()">Back to Games</button>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const startBtn = document.getElementById("startBtn");
+
+let player, blocks, score, baseSpeed, spawnInterval, playing;
+const maxScore = 1000;
+let spawnTimeout;
+
+function initGame(){
+  player = {x:180, y:360, w:40, h:40};
+  blocks = [];
+  score = 0;
+  baseSpeed = 2;
+  spawnInterval = 1000;
+  playing = true;
+  document.getElementById("score").innerText="Score: 0";
+  spawnBlocks();
+  loop();
+}
+
+// Player movement
+function movePlayer(x) {
+  player.x = x - player.w/2;
+  if(player.x < 0) player.x = 0;
+  if(player.x > canvas.width - player.w) player.x = canvas.width - player.w;
+}
+
+canvas.addEventListener("mousemove", e => {
+  const rect = canvas.getBoundingClientRect();
+  movePlayer(e.clientX - rect.left);
+});
+
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  movePlayer(e.touches[0].clientX - rect.left);
+}, {passive:false});
+
+document.addEventListener("keydown", e=>{
+  if(!playing) return;
+  if(e.key==="ArrowLeft" && player.x>0) player.x-=10;
+  else if(e.key==="ArrowRight" && player.x<canvas.width-player.w) player.x+=10;
+});
+
+// Spawn blocks
+function spawnBlocks(){
+  if(!playing) return;
+  const numBlocks = Math.min(1 + Math.floor(score/50), 12);
+  for(let i=0;i<numBlocks;i++){
+    let block = {x: Math.random()*(canvas.width-40), y: Math.random()*-100, size:40};
+    blocks.push(block);
+  }
+  spawnTimeout = setTimeout(spawnBlocks, Math.max(spawnInterval - score*3, 200));
+}
+
+function loop(){
+  if(!playing) return;
+  ctx.clearRect(0,0,400,400);
+
+  // player
+  ctx.fillStyle="blue"; 
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+
+  // blocks
+  ctx.fillStyle="red";
+  blocks.forEach((b,i)=>{
+    b.y += baseSpeed + score*0.03;
+    ctx.fillRect(b.x, b.y, b.size, b.size);
+
+    // collision
+    if(b.y + b.size > player.y && b.y < player.y + player.h && b.x + b.size > player.x && b.x < player.x + player.w){
+      alert("Game Over! Final Score: "+score);
+      resetGame();
+    }
+
+    // passed block
+    if(b.y > 400) { 
+      blocks.splice(i,1); 
+      score++; 
+      if(score >= maxScore){ 
+        alert("Congratulations! Max Score "+maxScore+" reached!"); 
+        resetGame(); 
+      }
+      document.getElementById("score").innerText="Score: "+score; 
+    }
+  });
+
+  requestAnimationFrame(loop);
+}
+
+function resetGame(){
+  playing=false;
+  clearTimeout(spawnTimeout);
+  blocks=[];
+  document.getElementById("score").innerText="Score: 0";
+}
+
+startBtn.addEventListener("click", ()=>{
+  resetGame();
+  initGame();
+});
+
+function goBack(){ window.location.href="page3.html"; }
+</script>
+</body>
+</html>

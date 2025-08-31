@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock Paper Scissor</title>
+<style>
+body { 
+  display:flex; 
+  flex-direction:row; 
+  justify-content:center; 
+  align-items:center; 
+  height:100vh; 
+  background:#d8b4fe; 
+  font-family:"Comic Sans MS", cursive, sans-serif; 
+  margin:0;
+}
+h1 { 
+  color:white; 
+  margin-bottom:20px; 
+  text-shadow:2px 2px black; 
+}
+.container {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.game-options {
+  display:flex; 
+  gap:20px; 
+}
+.option {
+  cursor:pointer;
+  border:2px solid white;
+  border-radius:10px;
+  padding:20px;
+  font-size:50px;
+  background:#fff8;
+  transition:transform 0.2s;
+  user-select:none;
+}
+.option:hover { transform:scale(1.1); }
+
+#sideScore {
+  position:absolute;
+  left:20px;
+  top:50%;
+  transform:translateY(-50%);
+  background:#9333ea;
+  padding:15px;
+  border-radius:15px;
+  color:white;
+  font-size:18px;
+  box-shadow:2px 2px 8px rgba(0,0,0,0.4);
+  min-width:150px;
+}
+#sideScore div {
+  margin:10px 0;
+  font-weight:bold;
+}
+#rounds {
+  margin-top:10px;
+  font-size:16px;
+}
+#result { 
+  margin-top:20px; 
+  color:white; 
+  font-size:20px; 
+  text-align:center; 
+}
+button { 
+  margin-top:20px; 
+  padding:10px 15px; 
+  font-size:16px; 
+  cursor:pointer; 
+  border:none;
+  border-radius:5px;
+}
+#playAgain {
+  display:none;
+  background:#4ade80;
+  color:white;
+  font-weight:bold;
+}
+</style>
+</head>
+<body>
+  <!-- Left side Scoreboard -->
+  <div id="sideScore">
+    <div id="userScore">⭐ You: 0</div>
+    <div id="compScore">💻 Computer: 0</div>
+    <div id="drawScore">🤝 Draws: 0</div>
+    <div id="rounds">Rounds: 0/5</div>
+  </div>
+
+  <!-- Main Game -->
+  <div class="container">
+    <h1>Rock Paper Scissor</h1>
+
+    <div class="game-options">
+      <div class="option" onclick="play('rock')">🪨</div>
+      <div class="option" onclick="play('paper')">📄</div>
+      <div class="option" onclick="play('scissor')">✂️</div>
+    </div>
+
+    <div id="result"></div>
+    <button onclick="goBack()">Back to Games</button>
+    <button id="playAgain" onclick="resetGame()">Play Again</button>
+  </div>
+
+<script>
+let userScore = 0;
+let compScore = 0;
+let drawScore = 0;
+let rounds = 0;
+
+function play(user){
+  if(rounds >= 5 || userScore === 3 || compScore === 3) return;
+
+  const options=['rock','paper','scissor'];
+  const comp=options[Math.floor(Math.random()*3)];
+  let res='';
+  
+  if(user===comp) {
+    res="Draw!";
+    drawScore++;
+  }
+  else if((user==='rock' && comp==='scissor')||
+          (user==='paper' && comp==='rock')||
+          (user==='scissor' && comp==='paper')) {
+    res="You Win!";
+    userScore++;
+  }
+  else {
+    res="You Lose!";
+    compScore++;
+  }
+  
+  rounds++;
+
+  const emojiMap = { rock:'🪨', paper:'📄', scissor:'✂️' };
+  document.getElementById("result").innerText=
+    `You: ${emojiMap[user]} | Computer: ${emojiMap[comp]}  => ${res}`;
+  
+  updateScoreboard();
+
+  if(userScore === 3 || compScore === 3 || rounds === 5){
+    setTimeout(()=>{
+      if(userScore > compScore) alert("🎉 You win the Best of 5!");
+      else if(compScore > userScore) alert("💻 Computer wins the Best of 5!");
+      else alert("🤝 It's a Draw!");
+      document.getElementById("playAgain").style.display = "inline-block";
+    }, 300);
+  }
+}
+
+function updateScoreboard(){
+  document.getElementById("userScore").innerText = `⭐ You: ${userScore}`;
+  document.getElementById("compScore").innerText = `💻 Computer: ${compScore}`;
+  document.getElementById("drawScore").innerText = `🤝 Draws: ${drawScore}`;
+  document.getElementById("rounds").innerText = `Rounds: ${rounds}/5`;
+}
+
+function resetGame(){
+  userScore = 0;
+  compScore = 0;
+  drawScore = 0;
+  rounds = 0;
+  document.getElementById("result").innerText="";
+  updateScoreboard();
+  document.getElementById("playAgain").style.display = "none";
+}
+
+function goBack(){ window.location.href="page3.html"; }
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch the Ball</title>
+<style>
+body { 
+  display:flex; 
+  flex-direction:column; 
+  justify-content:center; 
+  align-items:center; 
+  height:100vh; 
+  background:#d8b4fe; 
+  margin:0; 
+  font-family:"Comic Sans MS", cursive, sans-serif;
+}
+h2 {
+  margin:0;
+  font-size:22px;
+  color:white;
+  text-shadow:1px 1px 2px black;
+  margin-bottom:15px;
+}
+canvas { 
+  border-radius:10px; 
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+button { 
+  margin-top:10px; 
+  padding:8px 15px; 
+  font-weight:bold; 
+  border:none; 
+  border-radius:5px; 
+  cursor:pointer;
+}
+#score { 
+  color:white; 
+  font-size:20px; 
+  margin-top:10px; 
+}
+</style>
+</head>
+<body>
+
+<h2>🎀 Made By Rosy 🎀</h2>
+
+<canvas id="game" width="400" height="500"></canvas>
+<div id="score">Score: 0</div>
+<button onclick="startGame()">Start</button>
+<button onclick="goBack()">Back to Games</button>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let basket = {x:160, y:450, w:80, h:30};
+let balls = [];
+let dangerBalls = [];
+let score = 0;
+let gameRunning = false;
+
+const bgImage = new Image();
+bgImage.src = "background.jpg";  // <-- your pixel art background
+
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowLeft" && basket.x>0) basket.x-=20;
+  else if(e.key==="ArrowRight" && basket.x<canvas.width-basket.w) basket.x+=20;
+});
+
+canvas.addEventListener("mousemove", e=>{
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.left;
+  basket.x = Math.min(Math.max(x - basket.w/2, 0), canvas.width - basket.w);
+});
+
+canvas.addEventListener("touchmove", e=>{
+  let rect = canvas.getBoundingClientRect();
+  let x = e.touches[0].clientX - rect.left;
+  basket.x = Math.min(Math.max(x - basket.w/2, 0), canvas.width - basket.w);
+});
+
+function spawnBall(){
+  if(!gameRunning) return;
+  balls.push({x:Math.random()*380, y:0, r:10});
+  if(Math.random()<0.2) dangerBalls.push({x:Math.random()*380, y:0, r:12}); // 20% chance
+  setTimeout(spawnBall, 1000);
+}
+
+function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height); // background
+  
+  // Draw basket
+  ctx.fillStyle="white";
+  ctx.fillRect(basket.x, basket.y, basket.w, basket.h);
+
+  // Balls
+  ctx.fillStyle="red";
+  balls.forEach((b,i)=>{
+    b.y+=3;
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.fill();
+
+    if(b.y+b.r>basket.y && b.x>basket.x && b.x<basket.x+basket.w){
+      balls.splice(i,1); score++;
+      document.getElementById("score").innerText="Score: "+score;
+    }
+    if(b.y>500) balls.splice(i,1);
+  });
+
+  // Danger Balls
+  ctx.fillStyle="black";
+  dangerBalls.forEach((b,i)=>{
+    b.y+=4;
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.fill();
+
+    if(b.y+b.r>basket.y && b.x>basket.x && b.x<basket.x+basket.w){
+      alert("Game Over! Final Score: "+score);
+      resetGame();
+    }
+    if(b.y>500) dangerBalls.splice(i,1);
+  });
+
+  if(gameRunning) requestAnimationFrame(loop);
+}
+
+function startGame(){
+  if(gameRunning) return;
+  gameRunning=true;
+  score=0;
+  balls=[]; dangerBalls=[];
+  document.getElementById("score").innerText="Score: 0";
+  spawnBall();
+  loop();
+}
+
+function resetGame(){
+  gameRunning=false;
+  balls=[]; dangerBalls=[];
+}
+
+function goBack(){ window.location.href="page3.html"; }
+</script>
+</body>
+</html>

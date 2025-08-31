@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #ffe6f2; /* soft pink */
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      color: #ff3399;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px #00000055;
+    }
+    h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    input {
+      font-size: 2em;
+      text-align: center;
+      padding: 10px;
+      border: 2px solid #ff99cc;
+      border-radius: 10px;
+      outline: none;
+      width: 80px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1.2em;
+      background: #ff66b2;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      display: none; /* hidden until emoji entered */
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #ff3385;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Thanku for Playing 💖</h1>
+  <h2>Muawahhhhhh 😘</h2>
+
+  <input type="text" id="kissInput" placeholder="😘">
+  <button id="endBtn" onclick="endGame()">End</button>
+
+  <script>
+    const input = document.getElementById("kissInput");
+    const endBtn = document.getElementById("endBtn");
+
+    input.addEventListener("input", () => {
+      if (input.value.trim() === "😘") {
+        endBtn.style.display = "inline-block";
+      } else {
+        endBtn.style.display = "none";
+      }
+    });
+
+    function endGame() {
+      alert("Game Over 💕 Bye bye!");
+      window.close(); // will close tab (works if opened by script)
+    }
+  </script>
+</body>
+</html>

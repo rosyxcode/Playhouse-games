@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playhouse Games</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: #d8b4fe;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 180px);
+  grid-gap: 20px;
+}
+
+.game-square {
+  background: white;
+  color: #d946ef;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  width: 180px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s, background 0.2s;
+  text-align: center;
+}
+
+.game-square:hover {
+  transform: scale(1.05);
+  background: #fce7f3;
+}
+
+.next-btn {
+  margin-top: 25px;
+  align-self: flex-end;
+  margin-right: 40px;
+  padding: 12px 25px;
+  background: #9333ea;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.next-btn:hover {
+  background: #a855f7;
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="game-square" onclick="openGame('tic-tac-toe.html')">Tic Tac Toe</div>
+  <div class="game-square" onclick="openGame('snake.html')">Snake Game</div>
+  <div class="game-square" onclick="openGame('block.html')">Block Game</div>
+  <div class="game-square" onclick="openGame('rock-paper-scissor.html')">Rock Paper Scissor</div>
+  <div class="game-square" onclick="openGame('memory.html')">Memory Game</div>
+  <div class="game-square" onclick="openGame('catch-the-ball.html')">Catch The Ball</div>
+</div>
+
+<!-- Next button -->
+<button class="next-btn" onclick="goNext()">Next ➡️</button>
+
+<script>
+function openGame(url) {
+  window.open(url, "_blank"); // opens each game in a new tab/window
+}
+
+function goNext() {
+  window.location.href = "thankyou.html"; // goes to thankyou page
+}
+</script>
+</body>
+</html>

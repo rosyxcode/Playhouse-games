@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How To Play</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #9333ea, #d8b4fe);
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: white;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px black;
+    }
+    .instructions {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px 30px;
+      border-radius: 15px;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .instructions p {
+      margin: 10px 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #ffea00;
+    }
+    button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #4ade80;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background: #22c55e;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📖 How To Play</h1>
+  
+  <div class="instructions">
+    <p><span class="highlight">1. Tic-tac-toe:</span> Play with your friend.</p>
+    <p><span class="highlight">2. Snake game:</span> Use arrows if playing on laptop, swipe on the screen if playing on mobile phones.</p>
+    <p><span class="highlight">3. Block game:</span> Don't let the red blocks touch the blue one.</p>
+    <p><span class="highlight">4. Rock-paper-scissor:</span> Choose wisely.</p>
+    <p><span class="highlight">5. Memory game:</span> Touch on the card, match 2 fruits. ⚠️ Danger: You have only a minute!</p>
+    <p><span class="highlight">6. Catch the ball:</span> Catch the red ones, the black is danger.</p>
+  </div>
+
+  <button onclick="startGame()">🎮 Start Playing</button>
+
+  <script>
+    function startGame(){
+      window.location.href = "page3.html"; // your game menu page
+    }
+  </script>
+
+</body>
+</html>
